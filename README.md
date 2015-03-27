@@ -39,3 +39,35 @@ myConfig.py文件内容如下：
 
 ###原理
 --------------------
+本项目主要利用了sae的cron功能，能实现定时任务。
+在config.yaml中更改成如下代码，就能实现每小时去做某一项任务，该任务为url项，即跳转到projectName.sinaapp.com/chime，去运行相应函数chime()。cron语法见[新浪官方cron文档](http://sae.sina.com.cn/doc/python/cron.html)：
+
+	name: robot
+	version: 1
+
+	cron:
+	- url: /chime
+  	schedule: every 1 hour, offset 0
+ 
+ 该网站的首页受myApp中的如下代码控制，模板引擎会渲染一个index.html。
+ 
+ 	@app.route('/')
+	def index():
+	return render_template('index.html')
+ 
+ 在myApp.py里面，设定定时任务要完成的工作。为了防止token过期，还要在每次发微博之前重新授权得到token。
+ 
+ 	@app.route('/chime', methods=['GET', 'POST'])
+	def chime():
+		hour = time.strftime('%H',time.localtime(time.time()))
+
+		#每次发微博重新授权
+		token = myToken.getToken();
+		content = "" + greet.duang(hour) + greet.morning(hour);
+		data = {'access_token':token,'status':content}
+		data_urlencode = urllib.urlencode(data)
+		requrl = "https://api.weibo.com/2/statuses/update.json"
+		req = urllib2.Request(url = requrl,data =data_urlencode)
+		urllib2.urlopen(req,timeout=60)
+		return 'send success!'
+ 
