@@ -28,6 +28,7 @@ def duang(hour):
 def morning(hour):
 	if hour == 22:
 		return " 晚安，东大～"
-	if hour == 6:
+	elif hour == 6:
 		return " 早安，东大～"
-	return ""
+	else
+		return ""
