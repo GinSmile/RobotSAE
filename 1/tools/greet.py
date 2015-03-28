@@ -30,5 +30,5 @@ def morning(hour):
 		return " 晚安，东大～"
 	elif hour == 6:
 		return " 早安，东大～"
-	else
+	else:
 		return ""
